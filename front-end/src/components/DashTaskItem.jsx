@@ -1,15 +1,30 @@
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Icon,
+  IconButton,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTaskDetail } from "../react-query/Api";
 
-const DashTaskItem = ({ title = "title", _id }) => {
-  const { data: list } = useTaskDetail({ _id });
-
-  console.table({_id})
-
-  console.log(list?.data , _id ,'lololo')
-
+const DashTaskItem = ({
+  title,
+  list,
+  handleAddTaskBtn,
+  handleAddTaskText,
+  handleDeteleteTaskBtn,
+  cardTitle,
+  onDragStart,
+  onDragLeave,
+  onDragEnter,
+  onDragEnd,
+  onDragOver,
+  onDrop,
+}) => {
   return (
     <Box
       sx={{
@@ -29,37 +44,58 @@ const DashTaskItem = ({ title = "title", _id }) => {
         </Typography>
         <Box>
           <Box>
-            <Paper
-              elevation={4}
+            {list &&
+              list.map((item, index) => (
+                <Paper
+                  onDragLeave={onDragLeave}
+                  onDragEnter={onDragEnter}
+                  onDragEnd={onDragEnd}
+                  onDragOver={onDragOver}
+                  onDragStart={onDragStart}
+                  onDrop={(e) => onDrop(e, title)}
+                  key={index}
+                  elevation={4}
+                  sx={{
+                    p: 0.1,
+                    m: 0.5,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="subtitle1" fontWeight="light">
+                    {item}
+                  </Typography>
+                  <IconButton onClick={() => handleDeteleteTaskBtn(item)}>
+                    <DeleteIcon sx={{ color: "red" }} />
+                  </IconButton>
+                </Paper>
+              ))}
+            <Box
               sx={{
-                p: 0.1,
-                m: 0.5,
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "center",
                 alignItems: "center",
+                gap: 2,
+                padding: 2,
               }}
             >
-              <Typography variant="subtitle1" fontWeight="light">
-                Some new task
-              </Typography>
-              <DeleteIcon sx={{ color: "red" }} />
-            </Paper>
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 2,
-              padding: 2,
-            }}
-          >
-            <TextField size="small" sx={{ flex: 1 }} placeholder="Add Task" />
-            <Button variant="contained" size="small" color="primary">
-              {" "}
-              Add{" "}
-            </Button>
+              <TextField
+                size="small"
+                sx={{ flex: 1 }}
+                placeholder="Add Task"
+                onChange={handleAddTaskText}
+              />
+              <Button
+                variant="contained"
+                size="small"
+                color="primary"
+                onClick={() => handleAddTaskBtn(title)}
+              >
+                {" "}
+                Add{" "}
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Paper>
